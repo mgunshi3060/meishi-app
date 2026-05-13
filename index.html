@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>名刺管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 :root{
   --bg:#F4F3EF;--card:#FFF;--accent:#2D6A4F;--accent-l:#E6F4ED;
   --accent2:#E76F51;--text:#1A1A1A;--text2:#5A5A5A;--text3:#AAA;
   --border:#E2E0D8;--border2:#C5C3BB;--r:12px;--rs:8px;
-  --sh:0 2px 10px rgba(0,0,0,0.06);--shm:0 6px 28px rgba(0,0,0,0.12);
+  --shm:0 6px 28px rgba(0,0,0,0.13);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
 input,select,textarea,button{font-family:inherit;font-size:13px;border-radius:var(--rs);outline:none}
 input,select,textarea{border:1.5px solid var(--border);padding:8px 11px;width:100%;background:#fff;color:var(--text);transition:border-color 0.15s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
@@ -23,152 +23,164 @@ button{cursor:pointer}
 .screen{display:none}.screen.active{display:block}
 
 /* 認証 */
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#f4f3ef 0%,#e8f5ee 100%)}
-.auth-card{background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:2.25rem;width:100%;max-width:360px;box-shadow:var(--shm)}
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#f4f3ef,#e8f5ee)}
+.auth-card{background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:2.25rem;width:100%;max-width:380px;box-shadow:var(--shm)}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .auth-icon{width:42px;height:42px;background:var(--accent);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:21px}
-.auth-name{font-size:19px;font-weight:700;letter-spacing:-0.3px}
-.auth-sub{font-size:12px;color:var(--text2);margin-bottom:1.5rem;padding-left:52px;line-height:1.5}
+.auth-name{font-size:19px;font-weight:700}
+.auth-sub{font-size:12px;color:var(--text2);margin-bottom:1.25rem;padding-left:52px;line-height:1.6}
 .fl{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;margin-top:12px;font-weight:600}
-.btn-login{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:11px;font-size:14px;font-weight:700;margin-top:16px;transition:background 0.15s,transform 0.1s}
-.btn-login:hover{background:#245c43;transform:translateY(-1px)}
-.btn-login:active{transform:translateY(0)}
+.pw-toggle{position:relative}
+.pw-toggle input{padding-right:38px}
+.pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);font-size:16px;padding:0}
+.btn-login{width:100%;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:11px;font-size:14px;font-weight:700;margin-top:16px;transition:background 0.15s}
+.btn-login:hover{background:#245c43}
 .auth-err{font-size:12px;color:#d94f4f;margin-top:6px;display:none;padding:6px 10px;background:#fff0f0;border-radius:6px}
-.auth-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:12px}
+
+/* PATバナー */
+.pat-banner{background:#fffbeb;border-bottom:1.5px solid #fde68a;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pat-banner.connected{background:#e6f4ed;border-color:#86efac}
+.pat-banner-l{display:flex;align-items:center;gap:8px;font-size:12px;color:#92400e}
+.pat-banner.connected .pat-banner-l{color:var(--accent)}
+.pat-input-wrap{display:flex;gap:6px;align-items:center;flex:1;min-width:200px;max-width:400px}
+.pat-input{font-size:12px;padding:5px 9px;border:1.5px solid #fcd34d;border-radius:6px;flex:1;background:#fff}
+.pat-input:focus{border-color:var(--accent)}
+.btn-pat{font-size:12px;padding:5px 12px;border-radius:6px;border:none;font-weight:600;white-space:nowrap}
+.btn-pat.set{background:var(--accent);color:#fff}
+.btn-pat.set:hover{background:#245c43}
+.btn-pat.clear{background:#fee2e2;color:#dc2626}
+.btn-pat.clear:hover{background:#fca5a5}
+.pat-remember{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);cursor:pointer;white-space:nowrap}
+.pat-remember input{width:auto}
 
 /* ヘッダー */
 .hdr{background:#fff;border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:20;box-shadow:0 1px 8px rgba(0,0,0,0.04)}
-.hdr-in{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px}
-.hdr-l{display:flex;align-items:center;gap:9px}
-.hdr-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
-.hdr-title{font-size:15px;font-weight:700;letter-spacing:-0.2px}
-.hdr-badge{background:var(--accent-l);color:var(--accent);border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700}
-.hdr-r{display:flex;gap:7px;align-items:center}
-.btn-add{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;transition:background 0.15s}
+.hdr-in{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px}
+.hdr-l{display:flex;align-items:center;gap:8px}
+.hdr-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+.hdr-title{font-size:15px;font-weight:700}
+.hdr-badge{background:var(--accent-l);color:var(--accent);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:700}
+.hdr-r{display:flex;gap:6px}
+.btn-hdr{border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:7px;padding:5px 10px;font-size:12px;display:flex;align-items:center;gap:4px}
+.btn-hdr:hover{background:var(--bg)}
+.btn-add{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px}
 .btn-add:hover{background:#245c43}
-.btn-lo{border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:8px;padding:6px 11px;font-size:12px;display:flex;align-items:center;gap:4px}
-.btn-lo:hover{background:var(--bg)}
-.btn-exp{border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:8px;padding:6px 11px;font-size:12px;display:flex;align-items:center;gap:4px}
-.btn-exp:hover{background:var(--bg)}
-
-/* 保存ステータス */
-.save-status{font-size:11px;padding:3px 10px;border-radius:99px;display:flex;align-items:center;gap:4px}
-.save-status.idle{color:var(--text3)}
-.save-status.saving{color:#d97706;background:#fef3c7}
-.save-status.ok{color:var(--accent);background:var(--accent-l)}
-.save-status.err{color:#dc2626;background:#fee2e2}
 
 /* ツールバー */
-.tbar{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.tbar{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap}
 .sw{flex:1;min-width:160px;position:relative}
 .sw i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text3);pointer-events:none}
 .sw input{padding-left:34px}
-.fsel{font-size:12px;padding:7px 10px;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:var(--rs)}
+.fsel{font-size:12px;padding:6px 9px;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:var(--rs)}
 .fsel:focus{border-color:var(--accent)}
 
 /* グリッド */
 .gw{max-width:1100px;margin:0 auto;padding:4px 16px 40px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
-
-/* カード */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
 .card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color 0.15s,box-shadow 0.15s,transform 0.15s;cursor:pointer}
 .card:hover{border-color:var(--border2);box-shadow:var(--shm);transform:translateY(-2px)}
-.card-img{width:100%;height:115px;object-fit:contain;display:block;background:#f8f7f3;padding:4px}
-.card-img-ph{width:100%;height:115px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0ede6,#e8e4da);color:#ccc;font-size:32px}
-.card-body{padding:11px 13px 9px}
-.card-co-tag{display:inline-block;background:var(--accent-l);color:var(--accent);border-radius:99px;padding:2px 9px;font-size:10px;font-weight:700;margin-bottom:7px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.card-top{display:flex;align-items:flex-start;gap:9px}
-.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.card-img{width:100%;height:112px;object-fit:contain;display:block;background:#f8f7f3;padding:4px}
+.card-img-ph{width:100%;height:112px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0ede6,#e8e4da);color:#ccc;font-size:30px}
+.card-body{padding:10px 12px 8px}
+.card-co-tag{display:inline-block;background:var(--accent-l);color:var(--accent);border-radius:99px;padding:2px 9px;font-size:10px;font-weight:700;margin-bottom:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-top{display:flex;align-items:flex-start;gap:8px}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
 .av0{background:#DBEAFE;color:#1E40AF}.av1{background:#D1FAE5;color:#065F46}
 .av2{background:#FCE7F3;color:#9D174D}.av3{background:#FEF3C7;color:#92400E}
 .av4{background:#EDE9FE;color:#5B21B6}.av5{background:#FEE2E2;color:#991B1B}
 .ci{flex:1;min-width:0}
-.cn{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
-.cr{font-size:11px;color:var(--text2);margin-bottom:4px}
-.cdate{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:2px}
-.card-acts{display:flex;gap:5px;padding:8px 11px;border-top:1.5px solid var(--bg);flex-wrap:wrap}
-.bic{background:var(--bg);border:none;border-radius:6px;padding:5px 9px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;color:var(--text2);font-weight:500;transition:background 0.12s}
+.cn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.cr{font-size:11px;color:var(--text2);margin-bottom:2px}
+.cdate{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:2px}
+.card-acts{display:flex;gap:5px;padding:7px 10px;border-top:1.5px solid var(--bg);flex-wrap:wrap}
+.bic{background:var(--bg);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;color:var(--text2);font-weight:500;transition:background 0.12s}
 .bic:hover{background:#e8e6df}
 .bic.vi{color:var(--accent);background:var(--accent-l)}.bic.vi:hover{background:#c5e8d5}
 .bic.del:hover{color:#dc2626;background:#fee2e2}
-
 .empty{text-align:center;padding:4rem 1rem;color:var(--text3);grid-column:1/-1}
-.empty i{font-size:42px;display:block;margin-bottom:12px;color:#ddd}
-.empty p{font-size:13px;line-height:1.8}
+.empty i{font-size:40px;display:block;margin-bottom:12px;color:#ddd}
 
-/* モーダル */
-.mbg{position:fixed;inset:0;background:rgba(10,10,10,0.6);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:1rem;overflow-y:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+/* モーダル共通 */
+.mbg{position:fixed;inset:0;background:rgba(10,10,10,0.62);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:1rem;overflow-y:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .mbg.open{display:flex}
 .modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:540px;margin:auto;box-shadow:0 24px 64px rgba(0,0,0,0.22)}
 .mhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1.5px solid var(--bg)}
 .mtitle{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-.mtitle i{color:var(--accent);font-size:18px}
-.xbtn{background:var(--bg);border:none;width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:background 0.12s}
+.mtitle i{color:var(--accent)}
+.xbtn{background:var(--bg);border:none;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:15px}
 .xbtn:hover{background:#e5e3dc}
 .mft{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;border-top:1.5px solid var(--bg);padding-top:1rem}
-.btn-c{border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:8px;padding:7px 16px;font-size:13px}
+.btn-c{border:1.5px solid var(--border);background:#fff;color:var(--text2);border-radius:8px;padding:7px 14px;font-size:13px}
 .btn-c:hover{background:var(--bg)}
-.btn-s{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;transition:background 0.15s}
+.btn-s{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;transition:background 0.15s}
 .btn-s:hover{background:#245c43}
 .btn-s:disabled{background:#aaa;cursor:not-allowed}
 
 /* アップロード */
-.upzone{border:2px dashed var(--border2);border-radius:10px;padding:1.5rem 1rem;text-align:center;cursor:pointer;margin-bottom:12px;transition:all 0.15s;background:var(--bg)}
+.upzone{border:2px dashed var(--border2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;margin-bottom:10px;transition:all 0.15s;background:var(--bg)}
 .upzone:hover,.upzone.drag{border-color:var(--accent);background:var(--accent-l)}
-.upzone i{font-size:30px;color:var(--text3);display:block;margin-bottom:8px;transition:color 0.15s}
+.upzone i{font-size:28px;color:var(--text3);display:block;margin-bottom:6px;transition:color 0.15s}
 .upzone:hover i,.upzone.drag i{color:var(--accent)}
 .up-txt{font-size:13px;color:var(--text2);font-weight:600}
-.up-sub{font-size:11px;color:var(--text3);margin-top:4px}
-.prev-wrap{position:relative;margin-bottom:12px;background:var(--bg);border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
-.prev-img{width:100%;max-height:180px;object-fit:contain;display:block}
-.prev-del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:13px;display:flex;align-items:center;justify-content:center}
+.up-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.prev-wrap{position:relative;margin-bottom:10px;background:var(--bg);border-radius:10px;overflow:hidden;border:1.5px solid var(--border)}
+.prev-img{width:100%;max-height:170px;object-fit:contain;display:block}
+.prev-del{position:absolute;top:7px;right:7px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:13px;display:flex;align-items:center;justify-content:center}
 .prev-del:hover{background:rgba(0,0,0,0.8)}
+.img-info{font-size:11px;color:var(--text3);text-align:center;margin-bottom:8px}
 
 /* フォーム */
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .fg .full{grid-column:1/-1}
 .fl2{font-size:11px;color:var(--text2);display:block;margin-bottom:3px;font-weight:700;letter-spacing:0.3px}
-textarea{resize:vertical;min-height:60px}
+textarea{resize:vertical;min-height:56px}
 .req{color:var(--accent2)}
-.dupw{background:#fffbeb;border:1.5px solid #fbbf24;border-radius:8px;padding:9px 12px;font-size:12px;color:#92400e;margin-bottom:10px;display:flex;align-items:flex-start;gap:6px}
+.dupw{background:#fffbeb;border:1.5px solid #fbbf24;border-radius:8px;padding:8px 12px;font-size:12px;color:#92400e;margin-bottom:10px;display:flex;gap:6px}
 .dupw.hide{display:none!important}
 
+/* 保存進捗 */
+.save-progress{background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;display:none}
+.save-progress.show{display:block}
+.prog-row{display:flex;align-items:center;gap:8px;padding:3px 0;color:var(--text2)}
+.prog-row.done{color:var(--accent)}
+.prog-row.err{color:#dc2626}
+.prog-row.active{color:#d97706}
+
 /* 詳細 */
-.drow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--bg);font-size:13px;align-items:flex-start}
+.drow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--bg);font-size:13px;align-items:flex-start}
 .drow:last-child{border-bottom:none}
 .dlbl{color:var(--text2);width:80px;flex-shrink:0;font-size:11px;display:flex;align-items:center;gap:4px;font-weight:700;padding-top:1px}
 .dval{color:var(--text);flex:1;word-break:break-all;line-height:1.6}
 .nbadge{background:var(--accent-l);color:var(--accent);border-radius:99px;padding:2px 10px;font-size:11px;font-weight:600}
-.det-img{width:100%;max-height:160px;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);margin-bottom:14px;cursor:zoom-in;transition:opacity 0.15s}
-.det-img:hover{opacity:0.9}
+.det-img{width:100%;max-height:155px;object-fit:contain;border-radius:10px;border:1.5px solid var(--border);margin-bottom:12px;cursor:zoom-in}
+.det-img:hover{opacity:0.88}
 
 /* ビューア */
-.viewer-bg{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:1.5rem;gap:16px}
+.viewer-bg{position:fixed;inset:0;background:rgba(0,0,0,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:1.5rem;gap:14px}
 .viewer-bg.open{display:flex}
 .viewer-img{max-width:100%;max-height:82vh;border-radius:10px;object-fit:contain}
-.viewer-close{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:8px 22px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
-.viewer-close:hover{background:rgba(255,255,255,0.25)}
+.viewer-close{background:rgba(255,255,255,0.14);color:#fff;border:1px solid rgba(255,255,255,0.22);border-radius:8px;padding:8px 20px;font-size:13px;display:flex;align-items:center;gap:6px}
+.viewer-close:hover{background:rgba(255,255,255,0.24)}
 
-/* JSONインポートモーダル */
-.import-area{border:2px dashed var(--border2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;background:var(--bg);margin-bottom:12px}
+/* インポート */
+.import-area{border:2px dashed var(--border2);border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;background:var(--bg);margin-bottom:10px;transition:all 0.15s}
 .import-area:hover{border-color:var(--accent);background:var(--accent-l)}
-.import-area i{font-size:24px;color:var(--text3);display:block;margin-bottom:6px}
 
 /* スマホ */
+.la{display:inline}
 @media(max-width:640px){
-  .hdr-title{font-size:13px}
   .la{display:none}
-  .btn-add,.btn-lo,.btn-exp{padding:7px 9px}
-  .grid{grid-template-columns:1fr 1fr;gap:10px}
-  .card-img,.card-img-ph{height:90px}
-  .card-body{padding:9px 10px 8px}
-  .av{width:34px;height:34px;font-size:11px}
+  .btn-add,.btn-hdr{padding:6px 8px}
+  .pat-input-wrap{max-width:100%}
+  .grid{grid-template-columns:1fr 1fr;gap:9px}
+  .card-img,.card-img-ph{height:88px}
+  .card-body{padding:8px 10px 7px}
+  .av{width:32px;height:32px;font-size:11px}
   .cn{font-size:12px}
   .fg{grid-template-columns:1fr}
   .fg .full{grid-column:1}
   .modal{padding:1.25rem}
   .tbar{gap:6px}
-  .save-status .la{display:none}
 }
 @media(max-width:380px){.grid{grid-template-columns:1fr}}
 </style>
@@ -176,25 +188,23 @@ textarea{resize:vertical;min-height:60px}
 <body>
 
 <!-- =====================================================
-     ★ 設定ファイル (ここを自分の情報に書き換える)
-     =====================================================
-     GITHUB_USER  : GitHubのユーザー名
-     GITHUB_REPO  : リポジトリ名
-     GITHUB_TOKEN : Personal Access Token (ghp_xxx...)
-                    ※このファイルをpublicリポジトリに
-                      上げる場合はトークンを削除すること
-     APP_PASSWORD : アプリのログインパスワード
-     ===================================================== -->
+  ★ 設定（ここだけ書き換える）
+  GITHUB_USER : GitHubユーザー名
+  GITHUB_REPO : リポジトリ名
+  BRANCH      : ブランチ名（通常はmain）
+  APP_PASSWORD: アプリのログインパスワード初期値
+===================================================== -->
 <script>
-const CONFIG = {
-  GITHUB_USER  : '★ここにGitHubユーザー名★',
-  GITHUB_REPO  : '★ここにリポジトリ名★',
-  GITHUB_TOKEN : '★ここにPATトークン★',
-  APP_PASSWORD : '★ここにログインパスワード★',
-  DATA_PATH    : 'data/cards.json',   // cards.jsonのパス(変更不要)
-  IMAGES_PATH  : 'images',            // 画像フォルダ(変更不要)
-  BRANCH       : 'main',              // ブランチ名(mainまたはmaster)
+const CFG = {
+  GITHUB_USER : '★GitHubユーザー名★',
+  GITHUB_REPO : '★リポジトリ名★',
+  BRANCH      : 'main',
+  APP_PASSWORD: '1234',        // ← 好きなパスワードに変更
+  DATA_PATH   : 'data/cards.json',
+  IMAGES_PATH : 'images',
 };
+// PATはメモリ上にのみ保持（localStorageには保存しない）
+let PAT = '';
 </script>
 
 <!-- 認証 -->
@@ -205,18 +215,39 @@ const CONFIG = {
         <div class="auth-icon"><i class="ti ti-id-badge-2"></i></div>
         <span class="auth-name">名刺管理</span>
       </div>
-      <div class="auth-sub">個人情報保護のためパスワードが必要です</div>
+      <div class="auth-sub">アプリのパスワードを入力してください</div>
       <label class="fl">パスワード</label>
-      <input type="password" id="pwInput" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')tryLogin()">
+      <div class="pw-toggle">
+        <input type="password" id="pwInput" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')tryLogin()">
+        <button class="pw-eye" onclick="toggleEye('pwInput',this)"><i class="ti ti-eye"></i></button>
+      </div>
       <div class="auth-err" id="pwErr">パスワードが正しくありません</div>
       <button class="btn-login" onclick="tryLogin()">ログイン</button>
-      <div class="auth-hint">パスワードはCONFIG.APP_PASSWORDで設定</div>
     </div>
   </div>
 </div>
 
 <!-- メイン -->
 <div id="mainScreen" class="screen">
+
+  <!-- PATバナー -->
+  <div class="pat-banner" id="patBanner">
+    <div class="pat-banner-l">
+      <i class="ti ti-key"></i>
+      <span id="patStatus">GitHubへの書き込みにはPATトークンが必要です</span>
+    </div>
+    <div class="pat-input-wrap" id="patInputWrap">
+      <input class="pat-input" type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxx">
+      <label class="pat-remember">
+        <input type="checkbox" id="patRemember"> このPCで記憶
+      </label>
+      <button class="btn-pat set" onclick="setPAT()">接続</button>
+    </div>
+    <div id="patClearWrap" style="display:none">
+      <button class="btn-pat clear" onclick="clearPAT()"><i class="ti ti-unlink"></i> 切断</button>
+    </div>
+  </div>
+
   <div class="hdr">
     <div class="hdr-in">
       <div class="hdr-l">
@@ -225,14 +256,15 @@ const CONFIG = {
         <span class="hdr-badge" id="totalBadge">0件</span>
       </div>
       <div class="hdr-r">
-        <div class="save-status idle" id="saveStatus"><i class="ti ti-cloud"></i><span class="la">同期済み</span></div>
-        <button class="btn-exp" onclick="exportJSON()" title="JSONエクスポート"><i class="ti ti-download"></i><span class="la">エクスポート</span></button>
-        <button class="btn-exp" onclick="openImport()" title="JSONインポート"><i class="ti ti-upload"></i><span class="la">インポート</span></button>
-        <button class="btn-add" onclick="openAdd()"><i class="ti ti-plus"></i><span class="la">名刺を追加</span></button>
-        <button class="btn-lo" onclick="doLogout()"><i class="ti ti-logout"></i><span class="la">ログアウト</span></button>
+        <button class="btn-hdr" onclick="reloadCards()" title="最新データを取得"><i class="ti ti-refresh"></i><span class="la"> 更新</span></button>
+        <button class="btn-hdr" onclick="openImport()" title="JSONインポート"><i class="ti ti-upload"></i><span class="la"> インポート</span></button>
+        <button class="btn-hdr" onclick="exportJSON()" title="JSONエクスポート"><i class="ti ti-download"></i><span class="la"> エクスポート</span></button>
+        <button class="btn-add" onclick="openAdd()"><i class="ti ti-plus"></i><span class="la"> 名刺を追加</span></button>
+        <button class="btn-hdr" onclick="doLogout()"><i class="ti ti-logout"></i></button>
       </div>
     </div>
   </div>
+
   <div class="tbar">
     <div class="sw">
       <i class="ti ti-search"></i>
@@ -259,8 +291,8 @@ const CONFIG = {
     <div id="upZoneWrap">
       <div class="upzone" id="upZone" onclick="document.getElementById('fileIn').click()">
         <i class="ti ti-photo-up"></i>
-        <div class="up-txt">クリックまたはドラッグ＆ドロップで名刺画像を追加</div>
-        <div class="up-sub">JPG / PNG / HEIC　※端末内→GitHubに保存・外部AIには送信しない</div>
+        <div class="up-txt">クリックまたはドラッグ＆ドロップ</div>
+        <div class="up-sub">JPG / PNG / HEIC　※自動圧縮してimages/フォルダに保存</div>
       </div>
       <input type="file" id="fileIn" accept="image/*" style="display:none" onchange="handleImg(event)">
     </div>
@@ -268,7 +300,12 @@ const CONFIG = {
       <img id="prevImg" class="prev-img">
       <button class="prev-del" onclick="clearImg()"><i class="ti ti-x"></i></button>
     </div>
+    <div class="img-info" id="imgInfo"></div>
     <div class="dupw hide" id="dupW"><i class="ti ti-alert-triangle"></i><span><strong>重複の可能性：</strong><span id="dupNm"></span> さんが既に登録されています</span></div>
+    <div class="save-progress" id="saveProgress">
+      <div class="prog-row" id="prog1"><i class="ti ti-circle"></i> 画像をアップロード中...</div>
+      <div class="prog-row" id="prog2"><i class="ti ti-circle"></i> cards.jsonを更新中...</div>
+    </div>
     <div class="fg">
       <div class="full"><label class="fl2">取引先名 <span class="req">*</span></label><input id="f_co" placeholder="株式会社〇〇"></div>
       <div><label class="fl2">氏名 <span class="req">*</span></label><input id="f_nm" placeholder="山田 太郎" oninput="chkDup()"></div>
@@ -311,12 +348,12 @@ const CONFIG = {
       <button class="xbtn" onclick="closeMd('importModal')"><i class="ti ti-x"></i></button>
     </div>
     <div class="import-area" onclick="document.getElementById('jsonFileIn').click()">
-      <i class="ti ti-file-type-json"></i>
-      <div style="font-size:13px;color:var(--text2);font-weight:600">cards.jsonファイルを選択</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:4px">エクスポートしたJSONを読み込みます</div>
+      <i class="ti ti-file-type-json" style="font-size:24px;color:var(--text3);display:block;margin-bottom:6px"></i>
+      <div style="font-size:13px;color:var(--text2);font-weight:600">cards.jsonを選択</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px">同一IDは上書き・新規IDは追加</div>
     </div>
     <input type="file" id="jsonFileIn" accept=".json" style="display:none" onchange="handleJsonImport(event)">
-    <div id="importPreview" style="font-size:12px;color:var(--text2);padding:8px 0"></div>
+    <div id="importPreview" style="font-size:12px;padding:6px 0"></div>
     <div class="mft">
       <button class="btn-c" onclick="closeMd('importModal')">キャンセル</button>
       <button class="btn-s" id="importBtn" onclick="doImport()" style="display:none"><i class="ti ti-check"></i> インポート実行</button>
@@ -332,192 +369,196 @@ const CONFIG = {
 
 <script>
 // =====================================================
-// GitHub API ユーティリティ
+// GitHub API
 // =====================================================
-const API = `https://api.github.com/repos/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/contents`;
-const RAW = `https://raw.githubusercontent.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/${CONFIG.BRANCH}`;
+const API  = `https://api.github.com/repos/${CFG.GITHUB_USER}/${CFG.GITHUB_REPO}/contents`;
+const RAW  = `https://raw.githubusercontent.com/${CFG.GITHUB_USER}/${CFG.GITHUB_REPO}/${CFG.BRANCH}`;
 
-function ghHeaders(){
+function ghHdr(){
   return{
-    'Authorization': `token ${CONFIG.GITHUB_TOKEN}`,
-    'Content-Type': 'application/json',
-    'Accept': 'application/vnd.github.v3+json'
+    'Authorization':`token ${PAT}`,
+    'Content-Type':'application/json',
+    'Accept':'application/vnd.github.v3+json'
   };
 }
-
-// ファイルのSHAを取得（更新時に必要）
 async function getSHA(path){
-  try{
-    const r = await fetch(`${API}/${path}`, {headers: ghHeaders()});
-    if(!r.ok) return null;
-    const d = await r.json();
-    return d.sha;
-  }catch{return null;}
+  try{const r=await fetch(`${API}/${path}`,{headers:ghHdr()});if(!r.ok)return null;return(await r.json()).sha;}
+  catch{return null;}
 }
-
-// GitHubにファイルをアップロード/更新
-async function ghPut(path, content, isBase64=false){
-  const sha = await getSHA(path);
-  const body = {
-    message: `Update ${path}`,
-    content: isBase64 ? content : btoa(unescape(encodeURIComponent(content))),
-    branch: CONFIG.BRANCH
-  };
-  if(sha) body.sha = sha;
-  const r = await fetch(`${API}/${path}`, {
-    method: 'PUT',
-    headers: ghHeaders(),
-    body: JSON.stringify(body)
-  });
-  if(!r.ok) throw new Error(`GitHub API error: ${r.status}`);
+async function ghPut(path,content,isBase64=false){
+  const sha=await getSHA(path);
+  const body={message:`Update ${path}`,branch:CFG.BRANCH,
+    content:isBase64?content:btoa(unescape(encodeURIComponent(content)))};
+  if(sha)body.sha=sha;
+  const r=await fetch(`${API}/${path}`,{method:'PUT',headers:ghHdr(),body:JSON.stringify(body)});
+  if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
   return r.json();
 }
 
 // =====================================================
-// アプリ本体
+// PAT管理（メモリ + オプションでlocalStorage）
 // =====================================================
-let cards = [];
-let editId = null, detailId = null;
-let imgFile = null, imgB64 = null, importData = null;
+function setPAT(){
+  const v=document.getElementById('patInput').value.trim();
+  if(!v||!v.startsWith('ghp_')){alert('PATトークンはghp_で始まる文字列です');return;}
+  PAT=v;
+  if(document.getElementById('patRemember').checked){
+    // 「このPCで記憶」にチェックした場合のみlocalStorageに保存
+    localStorage.setItem('meishi_pat',v);
+  }
+  updatePatUI(true);
+}
+function clearPAT(){
+  PAT='';
+  localStorage.removeItem('meishi_pat');
+  document.getElementById('patInput').value='';
+  updatePatUI(false);
+}
+function updatePatUI(connected){
+  const banner=document.getElementById('patBanner');
+  const status=document.getElementById('patStatus');
+  const inputWrap=document.getElementById('patInputWrap');
+  const clearWrap=document.getElementById('patClearWrap');
+  if(connected){
+    banner.className='pat-banner connected';
+    status.innerHTML='<i class="ti ti-cloud-check"></i> GitHub接続中（書き込み可能）';
+    inputWrap.style.display='none';
+    clearWrap.style.display='block';
+  }else{
+    banner.className='pat-banner';
+    status.textContent='GitHubへの書き込みにはPATトークンが必要です（閲覧はトークン不要）';
+    inputWrap.style.display='flex';
+    clearWrap.style.display='none';
+  }
+}
+// ページ読込時：localStorageにPATがあれば自動復元
+(function initPAT(){
+  const saved=localStorage.getItem('meishi_pat');
+  if(saved){
+    PAT=saved;
+    document.getElementById('patRemember').checked=true;
+    updatePatUI(true);
+  }
+})();
 
-const avC = ['av0','av1','av2','av3','av4','av5'];
+// =====================================================
+// パスワード
+// =====================================================
+function getPassword(){return localStorage.getItem('meishi_pw')||CFG.APP_PASSWORD;}
+function toggleEye(inputId,btn){
+  const el=document.getElementById(inputId);
+  const isText=el.type==='text';
+  el.type=isText?'password':'text';
+  btn.innerHTML=isText?'<i class="ti ti-eye"></i>':'<i class="ti ti-eye-off"></i>';
+}
+function tryLogin(){
+  if(document.getElementById('pwInput').value===getPassword()){
+    document.getElementById('pwErr').style.display='none';
+    showScr('mainScreen');
+    loadCards();
+  }else document.getElementById('pwErr').style.display='block';
+}
+function doLogout(){document.getElementById('pwInput').value='';showScr('authScreen');}
+
+// =====================================================
+// データ読み込み（GitHubから取得、失敗時はlocalStorage）
+// =====================================================
+let cards=[];
+async function loadCards(){
+  try{
+    const url=`${RAW}/${CFG.DATA_PATH}?t=${Date.now()}`;
+    const r=await fetch(url);
+    if(r.ok){
+      cards=await r.json();
+      localStorage.setItem('meishi_cards',JSON.stringify(cards));
+    }else throw new Error('not found');
+  }catch{
+    cards=JSON.parse(localStorage.getItem('meishi_cards')||'[]');
+  }
+  render();
+}
+async function reloadCards(){
+  document.getElementById('grid').innerHTML='<div class="empty"><i class="ti ti-loader-2"></i><p>読み込み中...</p></div>';
+  await loadCards();
+}
+
+// =====================================================
+// cards.json 保存
+// =====================================================
+async function saveJSON(){
+  localStorage.setItem('meishi_cards',JSON.stringify(cards));
+  if(!PAT)return;
+  await ghPut(CFG.DATA_PATH,JSON.stringify(cards,null,2));
+}
+
+// =====================================================
+// 画像圧縮
+// =====================================================
+function compressImage(dataURL,maxW=900,quality=0.78){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.src=dataURL;
+  });
+}
+
+// =====================================================
+// ユーティリティ
+// =====================================================
+let editId=null,detailId=null,imgB64=null,importData=null;
+const avC=['av0','av1','av2','av3','av4','av5'];
 function avCls(n){let h=0;for(let c of(n||'?'))h=(h*31+c.charCodeAt(0))&0xffff;return avC[h%avC.length];}
 function ini(n){if(!n)return'?';const p=n.trim().split(/\s+/);return p.length>=2?p[0][0]+(p[1][0]||''):n.slice(0,2);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function openMd(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
 function closeMd(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
-
-// 保存ステータス表示
-function setStatus(type, msg){
-  const el = document.getElementById('saveStatus');
-  el.className = `save-status ${type}`;
-  const icons = {idle:'ti-cloud', saving:'ti-loader-2', ok:'ti-cloud-check', err:'ti-cloud-off'};
-  el.innerHTML = `<i class="ti ${icons[type]}"></i><span class="la">${msg}</span>`;
+function fuzzy(hay,nd){
+  if(!nd)return true;
+  const n=s=>String(s||'').toLowerCase().replace(/[\u30A1-\u30F6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60));
+  return n(hay).includes(n(nd));
 }
-
-// 曖昧検索（ひらがな/カタカナ統一）
-function fuzzy(hay, nd){
-  if(!nd) return true;
-  const norm = s => String(s||'').toLowerCase().replace(/[\u30A1-\u30F6]/g, c=>String.fromCharCode(c.charCodeAt(0)-0x60));
-  return norm(hay).includes(norm(nd));
-}
-function matchCard(c, q){
-  return ['name','company','role','tel','email','addr','next','memo'].some(k=>fuzzy(c[k],q));
-}
-
-// =====================================================
-// GitHub からデータ読み込み
-// =====================================================
-async function loadFromGitHub(){
-  try{
-    const url = `${RAW}/${CONFIG.DATA_PATH}?t=${Date.now()}`;
-    const r = await fetch(url);
-    if(r.ok){
-      cards = await r.json();
-    } else {
-      // ファイルが存在しない場合は空で初期化
-      cards = [];
-      await saveJSON(); // 空のJSONをGitHubに作成
-    }
-  }catch(e){
-    // オフラインまたはGitHub未設定の場合はlocalStorageにフォールバック
-    cards = JSON.parse(localStorage.getItem('meishi_cards')||'[]');
-    setStatus('err', 'オフライン(ローカル使用中)');
-  }
-}
-
-// =====================================================
-// cards.json を GitHub に保存
-// =====================================================
-async function saveJSON(){
-  // ローカルにも保存（バックアップ）
-  localStorage.setItem('meishi_cards', JSON.stringify(cards));
-
-  // GitHubが未設定の場合はローカルのみ
-  if(CONFIG.GITHUB_TOKEN === '★ここにPATトークン★'){
-    setStatus('ok', 'ローカル保存済み');
-    return;
-  }
-
-  setStatus('saving', '保存中...');
-  try{
-    const json = JSON.stringify(cards, null, 2);
-    await ghPut(CONFIG.DATA_PATH, json);
-    setStatus('ok', '同期済み');
-  }catch(e){
-    setStatus('err', '保存失敗');
-    console.error(e);
-  }
-}
-
-// =====================================================
-// 画像を GitHub images/ フォルダに保存
-// =====================================================
-async function saveImage(id, base64DataURL){
-  if(CONFIG.GITHUB_TOKEN === '★ここにPATトークン★') return `local:${base64DataURL}`;
-
-  // DataURL から Base64部分のみ抽出
-  const base64 = base64DataURL.split(',')[1];
-  const ext = base64DataURL.split(';')[0].split('/')[1] || 'jpg';
-  const filename = `${CONFIG.IMAGES_PATH}/img_${id}.${ext}`;
-
-  await ghPut(filename, base64, true);
-  // GitHub Pages の公開URLを返す
-  return `https://${CONFIG.GITHUB_USER}.github.io/${CONFIG.GITHUB_REPO}/${filename}`;
-}
-
-// =====================================================
-// 認証
-// =====================================================
-function tryLogin(){
-  if(document.getElementById('pwInput').value === CONFIG.APP_PASSWORD){
-    document.getElementById('pwErr').style.display='none';
-    showScr('mainScreen');
-    loadFromGitHub().then(()=>render());
-  }else{
-    document.getElementById('pwErr').style.display='block';
-  }
-}
-function doLogout(){document.getElementById('pwInput').value='';showScr('authScreen');}
+function matchCard(c,q){return['name','company','role','tel','email','addr','next','memo'].some(k=>fuzzy(c[k],q));}
 
 // =====================================================
 // 描画
 // =====================================================
 function render(){
-  const q = document.getElementById('q').value.trim();
-  const co = document.getElementById('coFilter').value;
-  const sort = document.getElementById('sortF').value;
-  let f = cards.filter(c=>matchCard(c,q)&&(!co||c.company===co));
-  if(sort==='name') f.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ja'));
-  else if(sort==='co') f.sort((a,b)=>(a.company||'').localeCompare(b.company||'','ja'));
-  else if(sort==='date') f.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  document.getElementById('totalBadge').textContent = cards.length+'件';
-  const g = document.getElementById('grid');
-  if(!f.length){
-    g.innerHTML=`<div class="empty"><i class="ti ti-id-badge-2"></i><p>${cards.length?'該当する名刺がありません':'最初の名刺を追加してください<br>右上の「名刺を追加」から登録できます'}</p></div>`;
-    return;
-  }
-  g.innerHTML = f.map(c=>{
-    // 画像：GitHub Pages URL または local: プレフィックスのBase64
-    const imgSrc = c.img
-      ? (c.img.startsWith('local:') ? c.img.slice(6) : c.img)
-      : null;
-    const imgH = imgSrc
-      ? `<img class="card-img" src="${imgSrc}" alt="名刺画像" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-img-ph><i class=ti ti-id-badge-2></i></div>'">`
-      : `<div class="card-img-ph"><i class="ti ti-id-badge-2"></i></div>`;
-    const imgBtn = imgSrc
-      ? `<button class="bic vi" onclick="event.stopPropagation();viewImg('${c.id}')"><i class="ti ti-photo"></i> 名刺</button>` : '';
-    const coTag = c.company ? `<div class="card-co-tag">${esc(c.company)}</div>` : '';
-    return `<div class="card" onclick="openDetail('${c.id}')">${imgH}
-      <div class="card-body">
-        ${coTag}
+  const q=document.getElementById('q').value.trim();
+  const co=document.getElementById('coFilter').value;
+  const sort=document.getElementById('sortF').value;
+  let f=cards.filter(c=>matchCard(c,q)&&(!co||c.company===co));
+  if(sort==='name')f.sort((a,b)=>(a.name||'').localeCompare(b.name||'','ja'));
+  else if(sort==='co')f.sort((a,b)=>(a.company||'').localeCompare(b.company||'','ja'));
+  else if(sort==='date')f.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  document.getElementById('totalBadge').textContent=cards.length+'件';
+  const g=document.getElementById('grid');
+  if(!f.length){g.innerHTML=`<div class="empty"><i class="ti ti-id-badge-2"></i><p style="font-size:13px">${cards.length?'該当なし':'名刺を追加してください'}</p></div>`;return;}
+  g.innerHTML=f.map(c=>{
+    // images/フォルダのURL または localフォールバック
+    const imgUrl=c.img_url
+      ?c.img_url
+      :c.img_local||null;
+    const imgH=imgUrl
+      ?`<img class="card-img" src="${imgUrl}" alt="名刺" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-img-ph><i class=ti ti-id-badge-2></i></div>'">`
+      :`<div class="card-img-ph"><i class="ti ti-id-badge-2"></i></div>`;
+    const imgBtn=imgUrl?`<button class="bic vi" onclick="event.stopPropagation();viewImg('${c.id}')"><i class="ti ti-photo"></i> 名刺</button>`:'';
+    const coTag=c.company?`<div class="card-co-tag">${esc(c.company)}</div>`:'';
+    return`<div class="card" onclick="openDetail('${c.id}')">${imgH}
+      <div class="card-body">${coTag}
         <div class="card-top">
           <div class="av ${avCls(c.name)}">${ini(c.name)}</div>
           <div class="ci">
             <div class="cn">${esc(c.name||'—')}</div>
             <div class="cr">${esc(c.role||'　')}</div>
-            ${c.date?`<div class="cdate"><i class="ti ti-calendar" style="font-size:10px"></i>${esc(c.date)}</div>`:''}
+            ${c.date?`<div class="cdate"><i class="ti ti-calendar"></i>${esc(c.date)}</div>`:''}
           </div>
         </div>
       </div>
@@ -529,185 +570,237 @@ function render(){
   }).join('');
   updCoFilter();
 }
-
 function updCoFilter(){
-  const s = document.getElementById('coFilter'), cur = s.value;
-  const cos = [...new Set(cards.map(c=>c.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));
-  s.innerHTML = '<option value="">会社名 すべて</option>' + cos.map(c=>`<option value="${esc(c)}"${c===cur?' selected':''}>${esc(c)}</option>`).join('');
+  const s=document.getElementById('coFilter'),cur=s.value;
+  const cos=[...new Set(cards.map(c=>c.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));
+  s.innerHTML='<option value="">会社名 すべて</option>'+cos.map(c=>`<option value="${esc(c)}"${c===cur?' selected':''}>${esc(c)}</option>`).join('');
 }
 
 // =====================================================
 // 画像処理
 // =====================================================
-function handleImg(e){
-  const f = e.target.files[0]; if(!f) return;
-  imgFile = f;
-  const r = new FileReader();
-  r.onload = ev => {
-    imgB64 = ev.target.result;
-    document.getElementById('prevImg').src = imgB64;
-    document.getElementById('prevWrap').style.display = 'block';
-    document.getElementById('upZoneWrap').style.display = 'none';
+async function handleImg(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async ev=>{
+    imgB64=await compressImage(ev.target.result);
+    document.getElementById('prevImg').src=imgB64;
+    document.getElementById('prevWrap').style.display='block';
+    document.getElementById('upZoneWrap').style.display='none';
+    const kb=Math.round(imgB64.length*0.75/1024);
+    document.getElementById('imgInfo').textContent=`圧縮後: 約${kb}KB`;
   };
   r.readAsDataURL(f);
 }
 function clearImg(){
-  imgFile = null; imgB64 = null;
-  document.getElementById('fileIn').value = '';
-  document.getElementById('prevWrap').style.display = 'none';
-  document.getElementById('upZoneWrap').style.display = 'block';
+  imgB64=null;document.getElementById('fileIn').value='';
+  document.getElementById('prevWrap').style.display='none';
+  document.getElementById('upZoneWrap').style.display='block';
+  document.getElementById('imgInfo').textContent='';
 }
-const uz = document.getElementById('upZone');
-uz.addEventListener('dragover', e=>{e.preventDefault();uz.classList.add('drag');});
-uz.addEventListener('dragleave', ()=>uz.classList.remove('drag'));
-uz.addEventListener('drop', e=>{
-  e.preventDefault(); uz.classList.remove('drag');
-  const f = e.dataTransfer.files[0];
-  if(f && f.type.startsWith('image/')){
-    imgFile = f;
-    const r = new FileReader();
-    r.onload = ev=>{imgB64=ev.target.result;document.getElementById('prevImg').src=imgB64;document.getElementById('prevWrap').style.display='block';document.getElementById('upZoneWrap').style.display='none';};
+const uz=document.getElementById('upZone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',e=>{
+  e.preventDefault();uz.classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/')){
+    const r=new FileReader();
+    r.onload=async ev=>{
+      imgB64=await compressImage(ev.target.result);
+      document.getElementById('prevImg').src=imgB64;
+      document.getElementById('prevWrap').style.display='block';
+      document.getElementById('upZoneWrap').style.display='none';
+      const kb=Math.round(imgB64.length*0.75/1024);
+      document.getElementById('imgInfo').textContent=`圧縮後: 約${kb}KB`;
+    };
     r.readAsDataURL(f);
   }
 });
 
 // =====================================================
-// フォーム操作
+// 保存処理
 // =====================================================
 function clrForm(){
   ['f_co','f_nm','f_role','f_tel','f_email','f_addr','f_date','f_next','f_memo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('dupW').classList.add('hide');
+  document.getElementById('saveProgress').classList.remove('show');
   clearImg();
 }
 function openAdd(){
-  editId = null; imgFile = null; imgB64 = null; clrForm();
-  document.getElementById('editTitle').innerHTML = '<i class="ti ti-plus"></i>名刺を追加';
-  document.getElementById('f_date').value = new Date().toISOString().slice(0,10);
-  document.getElementById('upZoneWrap').style.display = 'block';
-  document.getElementById('prevWrap').style.display = 'none';
+  editId=null;imgB64=null;clrForm();
+  document.getElementById('editTitle').innerHTML='<i class="ti ti-plus"></i>名刺を追加';
+  document.getElementById('f_date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('upZoneWrap').style.display='block';
+  document.getElementById('prevWrap').style.display='none';
   openMd('editModal');
 }
 function openEdit(id){
-  editId = id; const c = cards.find(x=>x.id===id); if(!c) return;
-  clrForm(); imgB64 = c.img || null;
-  document.getElementById('editTitle').innerHTML = '<i class="ti ti-edit"></i>名刺を編集';
-  document.getElementById('f_co').value = c.company||'';
-  document.getElementById('f_nm').value = c.name||'';
-  document.getElementById('f_role').value = c.role||'';
-  document.getElementById('f_tel').value = c.tel||'';
-  document.getElementById('f_email').value = c.email||'';
-  document.getElementById('f_addr').value = c.addr||'';
-  document.getElementById('f_date').value = c.date||'';
-  document.getElementById('f_next').value = c.next||'';
-  document.getElementById('f_memo').value = c.memo||'';
-  if(c.img){
-    const src = c.img.startsWith('local:') ? c.img.slice(6) : c.img;
-    document.getElementById('prevImg').src = src;
-    document.getElementById('prevWrap').style.display = 'block';
-    document.getElementById('upZoneWrap').style.display = 'none';
-  }
+  editId=id;const c=cards.find(x=>x.id===id);if(!c)return;
+  clrForm();
+  document.getElementById('editTitle').innerHTML='<i class="ti ti-edit"></i>名刺を編集';
+  document.getElementById('f_co').value=c.company||'';
+  document.getElementById('f_nm').value=c.name||'';
+  document.getElementById('f_role').value=c.role||'';
+  document.getElementById('f_tel').value=c.tel||'';
+  document.getElementById('f_email').value=c.email||'';
+  document.getElementById('f_addr').value=c.addr||'';
+  document.getElementById('f_date').value=c.date||'';
+  document.getElementById('f_next').value=c.next||'';
+  document.getElementById('f_memo').value=c.memo||'';
+  const imgSrc=c.img_url||c.img_local||null;
+  imgB64=c.img_local||null;
+  if(imgSrc){document.getElementById('prevImg').src=imgSrc;document.getElementById('prevWrap').style.display='block';document.getElementById('upZoneWrap').style.display='none';}
   openMd('editModal');
 }
 function chkDup(){
-  const nm = document.getElementById('f_nm').value.trim();
-  const w = document.getElementById('dupW');
-  if(!nm || editId){w.classList.add('hide');return;}
-  const dup = cards.find(c=>c.name.replace(/\s/g,'')===(nm.replace(/\s/g,'')));
+  const nm=document.getElementById('f_nm').value.trim();
+  const w=document.getElementById('dupW');
+  if(!nm||editId){w.classList.add('hide');return;}
+  const dup=cards.find(c=>c.name.replace(/\s/g,'')===(nm.replace(/\s/g,'')));
   if(dup){document.getElementById('dupNm').textContent=dup.name;w.classList.remove('hide');}
   else w.classList.add('hide');
 }
 
+function progSet(row,type,msg){
+  const el=document.getElementById(row);
+  const icons={active:'ti-loader-2',done:'ti-circle-check',err:'ti-circle-x',wait:'ti-circle'};
+  el.className=`prog-row ${type}`;
+  el.innerHTML=`<i class="ti ${icons[type]}"></i> ${msg}`;
+}
+
 async function saveCard(){
-  const name = document.getElementById('f_nm').value.trim();
-  const company = document.getElementById('f_co').value.trim();
+  const name=document.getElementById('f_nm').value.trim();
+  const company=document.getElementById('f_co').value.trim();
   if(!name||!company){alert('取引先名と氏名は必須です');return;}
   if(!editId){
-    const dup = cards.find(c=>c.name.replace(/\s/g,'')===(name.replace(/\s/g,'')));
-    if(dup && !confirm(`「${dup.name}」さんが既に存在します。それでも追加しますか？`)) return;
+    const dup=cards.find(c=>c.name.replace(/\s/g,'')===(name.replace(/\s/g,'')));
+    if(dup&&!confirm(`「${dup.name}」さんが既に存在します。それでも追加しますか？`))return;
   }
 
-  const btn = document.getElementById('saveBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="ti ti-loader-2"></i> 保存中...';
+  const btn=document.getElementById('saveBtn');
+  btn.disabled=true;
+  btn.innerHTML='<i class="ti ti-loader-2"></i> 保存中...';
 
-  const id = editId || (Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const id=editId||(Date.now().toString(36)+Math.random().toString(36).slice(2));
+  const existingCard=editId?cards.find(c=>c.id===editId):null;
 
-  // 画像をGitHubにアップロード（新規画像がある場合）
-  let imgUrl = null;
-  const existingCard = editId ? cards.find(c=>c.id===editId) : null;
+  // 進捗表示
+  const hasNewImg=imgB64&&imgB64.startsWith('data:');
+  const prog=document.getElementById('saveProgress');
+  if(PAT&&hasNewImg){
+    prog.classList.add('show');
+    progSet('prog1','wait','画像をアップロード中...');
+    progSet('prog2','wait','cards.jsonを更新中...');
+  }
 
-  if(imgB64 && imgB64 !== (existingCard?.img)){
-    // 新しい画像がある場合
-    if(imgB64.startsWith('data:')){
-      imgUrl = await saveImage(id, imgB64).catch(()=>`local:${imgB64}`);
-    } else {
-      imgUrl = imgB64; // すでにURLの場合はそのまま
+  // 画像処理
+  let img_url=existingCard?.img_url||null;
+  let img_local=null;
+
+  if(hasNewImg){
+    const ext='jpg';
+    const imgPath=`${CFG.IMAGES_PATH}/img_${id}.${ext}`;
+    const b64pure=imgB64.split(',')[1];
+
+    if(PAT){
+      // GitHubにアップロード
+      progSet('prog1','active','画像をアップロード中...');
+      try{
+        await ghPut(imgPath,b64pure,true);
+        img_url=`https://${CFG.GITHUB_USER}.github.io/${CFG.GITHUB_REPO}/${imgPath}`;
+        img_local=imgB64; // ローカルにもキャッシュ
+        progSet('prog1','done','画像アップロード完了');
+      }catch(e){
+        progSet('prog1','err',`画像アップロード失敗: ${e.message}`);
+        img_local=imgB64; // failsafe: ローカルに保存
+      }
+    }else{
+      // PAT未設定：ローカルに保存（後でGitHubに手動アップ）
+      img_local=imgB64;
+      img_url=null;
     }
-  } else if(editId && existingCard){
-    imgUrl = existingCard.img; // 既存画像を維持
+  }else if(editId&&existingCard){
+    img_url=existingCard.img_url||null;
+    img_local=existingCard.img_local||null;
   }
 
-  const d = {
-    id,
-    company,
-    name,
-    role: document.getElementById('f_role').value.trim(),
-    tel: document.getElementById('f_tel').value.trim(),
-    email: document.getElementById('f_email').value.trim(),
-    addr: document.getElementById('f_addr').value.trim(),
-    date: document.getElementById('f_date').value,
-    next: document.getElementById('f_next').value.trim(),
-    memo: document.getElementById('f_memo').value.trim(),
-    img: imgUrl || null,
-    updated: new Date().toISOString().slice(0,10)
+  const d={
+    id,company,name,
+    role:document.getElementById('f_role').value.trim(),
+    tel:document.getElementById('f_tel').value.trim(),
+    email:document.getElementById('f_email').value.trim(),
+    addr:document.getElementById('f_addr').value.trim(),
+    date:document.getElementById('f_date').value,
+    next:document.getElementById('f_next').value.trim(),
+    memo:document.getElementById('f_memo').value.trim(),
+    img_url,    // GitHub Pages URL（images/フォルダ）
+    img_local,  // Base64ローカルキャッシュ
+    updated:new Date().toISOString().slice(0,10)
   };
 
   if(editId){const i=cards.findIndex(c=>c.id===editId);if(i>-1)cards[i]=d;}
   else cards.unshift(d);
 
-  await saveJSON();
+  // JSON保存
+  if(PAT){
+    progSet('prog2','active','cards.jsonを更新中...');
+    try{
+      await saveJSON();
+      progSet('prog2','done','cards.json更新完了');
+    }catch(e){
+      progSet('prog2','err',`JSON保存失敗: ${e.message}`);
+      localStorage.setItem('meishi_cards',JSON.stringify(cards));
+    }
+  }else{
+    localStorage.setItem('meishi_cards',JSON.stringify(cards));
+  }
 
-  btn.disabled = false;
-  btn.innerHTML = '<i class="ti ti-check"></i> 保存';
+  btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-check"></i> 保存';
+
+  // PAT未設定で画像がある場合はメッセージ
+  if(!PAT&&hasNewImg){
+    alert('PAT未接続のためデータはローカルに保存しました。\nGitHubへ反映するにはPATを接続してから再保存してください。');
+  }
+
   closeMd('editModal');
   render();
 }
 
-function delCard(id){
-  const c = cards.find(x=>x.id===id);
-  if(!c || !confirm(`「${c.name}」の名刺を削除しますか？\n※画像はGitHubから手動削除が必要です`)) return;
-  cards = cards.filter(x=>x.id!==id);
-  saveJSON();
+async function delCard(id){
+  const c=cards.find(x=>x.id===id);
+  if(!c||!confirm(`「${c.name}」の名刺を削除しますか？`))return;
+  cards=cards.filter(x=>x.id!==id);
+  await saveJSON();
   render();
 }
 
 // =====================================================
-// 詳細表示
+// 詳細
 // =====================================================
 function openDetail(id){
-  detailId = id; const c = cards.find(x=>x.id===id); if(!c) return;
-  document.getElementById('detailTitle').innerHTML = `<div class="av ${avCls(c.name)}" style="width:30px;height:30px;font-size:11px;margin-right:8px">${ini(c.name)}</div>${esc(c.name)}`;
-  const imgSrc = c.img ? (c.img.startsWith('local:') ? c.img.slice(6) : c.img) : null;
-  document.getElementById('detailImgWrap').innerHTML = imgSrc
-    ? `<img src="${imgSrc}" class="det-img" onclick="viewImg('${c.id}')" title="クリックで拡大">` : '';
-  const rows = [
+  detailId=id;const c=cards.find(x=>x.id===id);if(!c)return;
+  document.getElementById('detailTitle').innerHTML=`<div class="av ${avCls(c.name)}" style="width:30px;height:30px;font-size:11px;margin-right:8px">${ini(c.name)}</div>${esc(c.name)}`;
+  const imgSrc=c.img_url||c.img_local||null;
+  document.getElementById('detailImgWrap').innerHTML=imgSrc?`<img src="${imgSrc}" class="det-img" onclick="viewImg('${c.id}')" title="クリックで拡大">`:'';
+  const rows=[
     ['ti-building','取引先',c.company],['ti-briefcase','役職',c.role],
     ['ti-phone','電話',c.tel],['ti-mail','メール',c.email],
     ['ti-map-pin','住所',c.addr],['ti-calendar','会った日',c.date],
     ['ti-arrow-right','次回',c.next?`<span class="nbadge">${esc(c.next)}</span>`:null],
     ['ti-note','メモ',c.memo],['ti-refresh','更新日',c.updated]
   ].filter(r=>r[2]);
-  document.getElementById('detailBody').innerHTML = rows.map(r=>`<div class="drow"><span class="dlbl"><i class="ti ${r[0]}"></i>${r[1]}</span><span class="dval">${r[2]}</span></div>`).join('');
+  document.getElementById('detailBody').innerHTML=rows.map(r=>`<div class="drow"><span class="dlbl"><i class="ti ${r[0]}"></i>${r[1]}</span><span class="dval">${r[2]}</span></div>`).join('');
   openMd('detailModal');
 }
 function editFromDetail(){closeMd('detailModal');openEdit(detailId);}
-
 function viewImg(id){
-  const c = cards.find(x=>x.id===id); if(!c||!c.img) return;
-  const src = c.img.startsWith('local:') ? c.img.slice(6) : c.img;
-  document.getElementById('viewerImg').src = src;
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  const src=c.img_url||c.img_local||null;if(!src)return;
+  document.getElementById('viewerImg').src=src;
   document.getElementById('viewer').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
 function closeViewer(){document.getElementById('viewer').classList.remove('open');document.body.style.overflow='';}
 
@@ -715,47 +808,40 @@ function closeViewer(){document.getElementById('viewer').classList.remove('open'
 // エクスポート / インポート
 // =====================================================
 function exportJSON(){
-  // 画像URLはそのまま（Base64は含まない）
-  const exportData = cards.map(c=>({...c, img: c.img && !c.img.startsWith('local:') ? c.img : null}));
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `cards_${new Date().toISOString().slice(0,10)}.json`;
+  // エクスポート時はBase64（img_local）を除外してURLのみ
+  const exp=cards.map(({img_local,...rest})=>rest);
+  const blob=new Blob([JSON.stringify(exp,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`cards_${new Date().toISOString().slice(0,10)}.json`;
   a.click();
 }
-
 function openImport(){
-  document.getElementById('importPreview').textContent = '';
-  document.getElementById('importBtn').style.display = 'none';
-  document.getElementById('jsonFileIn').value = '';
-  importData = null;
+  document.getElementById('importPreview').textContent='';
+  document.getElementById('importBtn').style.display='none';
+  document.getElementById('jsonFileIn').value='';
+  importData=null;
   openMd('importModal');
 }
-
 function handleJsonImport(e){
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = ev=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
     try{
-      importData = JSON.parse(ev.target.result);
-      if(!Array.isArray(importData)) throw new Error('配列形式ではありません');
-      document.getElementById('importPreview').innerHTML = `<span style="color:var(--accent);font-weight:600">✓ ${importData.length}件のデータを確認しました</span><br><small>※既存データに追加されます（同一IDは上書き）</small>`;
-      document.getElementById('importBtn').style.display = 'flex';
-    }catch(err){
-      document.getElementById('importPreview').innerHTML = `<span style="color:#dc2626">✗ JSONの形式が正しくありません</span>`;
-      importData = null;
+      importData=JSON.parse(ev.target.result);
+      if(!Array.isArray(importData))throw new Error();
+      document.getElementById('importPreview').innerHTML=`<span style="color:var(--accent);font-weight:600">✓ ${importData.length}件を確認</span>`;
+      document.getElementById('importBtn').style.display='flex';
+    }catch{
+      document.getElementById('importPreview').innerHTML=`<span style="color:#dc2626">✗ 形式が正しくありません</span>`;
+      importData=null;
     }
   };
   r.readAsText(f);
 }
-
 async function doImport(){
-  if(!importData) return;
-  // 同一IDは上書き、新規IDは追加
-  importData.forEach(nc=>{
-    const i = cards.findIndex(c=>c.id===nc.id);
-    if(i>-1) cards[i]=nc; else cards.unshift(nc);
-  });
+  if(!importData)return;
+  importData.forEach(nc=>{const i=cards.findIndex(c=>c.id===nc.id);if(i>-1)cards[i]=nc;else cards.unshift(nc);});
   await saveJSON();
   closeMd('importModal');
   render();
