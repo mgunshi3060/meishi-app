@@ -394,6 +394,13 @@ async function ghPut(path,content,isBase64=false){
   if(!r.ok){const e=await r.json();throw new Error(e.message||r.status);}
   return r.json();
 }
+async function ghDel(path){
+  const sha=await getSHA(path);
+  if(!sha)return;
+  const body={message:`Delete ${path}`,branch:CFG.BRANCH,sha};
+  const r=await fetch(`${API}/${path}`,{method:'DELETE',headers:ghHdr(),body:JSON.stringify(body)});
+  if(!r.ok){const e=await r.json();console.warn('画像削除失敗:',e.message||r.status);}
+}
 
 // =====================================================
 // PAT管理（メモリ + オプションでlocalStorage）
@@ -469,12 +476,22 @@ async function loadCards(){
     const url=`${RAW}/${CFG.DATA_PATH}?t=${Date.now()}`;
     const r=await fetch(url);
     if(r.ok){
-      cards=await r.json();
+      const ghCards=await r.json();
+      // ③ PAT未接続時にlocalStorageに保存したデータをマージ（GitHub優先・ローカルのみIDは保持）
+      const local=JSON.parse(localStorage.getItem('meishi_cards')||'[]');
+      const ghIds=new Set(ghCards.map(c=>c.id));
+      const localOnly=local.filter(c=>!ghIds.has(c.id));
+      cards=[...ghCards,...localOnly];
       localStorage.setItem('meishi_cards',JSON.stringify(cards));
     }else throw new Error('not found');
   }catch{
     cards=JSON.parse(localStorage.getItem('meishi_cards')||'[]');
   }
+  // ⑤ 旧フォーマット(img)互換: img_urlに移行
+  cards=cards.map(c=>{
+    if(c.img&&!c.img_url){c.img_url=c.img;delete c.img;}
+    return c;
+  });
   render();
 }
 async function reloadCards(){
@@ -656,8 +673,9 @@ function openEdit(id){
 function chkDup(){
   const nm=document.getElementById('f_nm').value.trim();
   const w=document.getElementById('dupW');
-  if(!nm||editId){w.classList.add('hide');return;}
-  const dup=cards.find(c=>c.name.replace(/\s/g,'')===(nm.replace(/\s/g,'')));
+  if(!nm){w.classList.add('hide');return;}
+  // ④ 編集時は自分自身を除外して重複チェック
+  const dup=cards.find(c=>c.name.replace(/\s/g,'')===(nm.replace(/\s/g,''))&&c.id!==editId);
   if(dup){document.getElementById('dupNm').textContent=dup.name;w.classList.remove('hide');}
   else w.classList.add('hide');
 }
@@ -704,6 +722,11 @@ async function saveCard(){
     const b64pure=imgB64.split(',')[1];
 
     if(PAT){
+      // ② 編集時: 旧IDと異なる画像があれば削除（IDが変わった場合のゴミ対策）
+      if(editId&&existingCard&&existingCard.img_url){
+        const oldImgPath=`${CFG.IMAGES_PATH}/img_${editId}.jpg`;
+        if(oldImgPath!==imgPath){await ghDel(oldImgPath);}
+      }
       // GitHubにアップロード
       progSet('prog1','active','画像をアップロード中...');
       try{
@@ -773,6 +796,11 @@ async function delCard(id){
   if(!c||!confirm(`「${c.name}」の名刺を削除しますか？`))return;
   cards=cards.filter(x=>x.id!==id);
   await saveJSON();
+  // ① GitHubの画像ファイルも削除
+  if(PAT&&c.img_url){
+    const imgPath=`${CFG.IMAGES_PATH}/img_${c.id}.jpg`;
+    await ghDel(imgPath);
+  }
   render();
 }
 
