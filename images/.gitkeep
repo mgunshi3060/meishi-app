@@ -1,1 +1,3 @@
-
+# このファイルはimagesフォルダをGitHubで保持するために必要です
+# 名刺画像はこのフォルダに img_{id}.jpg の形式で保存されます
+# 例: img_sample001.jpg, img_abc123def.jpg
