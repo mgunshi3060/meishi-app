@@ -92,6 +92,8 @@ button{cursor:pointer}
 .cn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
 .cr{font-size:11px;color:var(--text2);margin-bottom:2px}
 .cdate{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:2px}
+.cdate-link{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:2px;cursor:pointer;border-radius:4px;padding:1px 3px;margin:-1px -3px;transition:background 0.12s,color 0.12s;text-decoration:none}
+.cdate-link:hover{background:var(--accent-l);color:var(--accent)}
 .card-acts{display:flex;gap:5px;padding:7px 10px;border-top:1.5px solid var(--bg);flex-wrap:wrap}
 .bic{background:var(--bg);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;color:var(--text2);font-weight:500;transition:background 0.12s}
 .bic:hover{background:#e8e6df}
@@ -548,6 +550,27 @@ function fuzzy(hay,nd){
 function matchCard(c,q){return['name','company','role','tel','email','next','memo'].some(k=>fuzzy(c[k],q));}
 
 // =====================================================
+// 電話・メール連動
+// =====================================================
+function isMobile(){
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||
+         (navigator.maxTouchPoints>1&&/Mac/.test(navigator.userAgent)===false);
+}
+function callTel(tel,name){
+  // スマホのみ電話確認
+  if(!isMobile())return;
+  if(confirm(`📞 ${name||tel} に電話しますか？\n${tel}`)){
+    window.location.href='tel:'+tel.replace(/[^\d+\-]/g,'');
+  }
+}
+function sendMail(email,name){
+  // PC・スマホ共通でメーラー起動
+  if(confirm(`✉️ ${name||email} にメールを送りますか？\n${email}`)){
+    window.location.href='mailto:'+email;
+  }
+}
+
+// =====================================================
 // 描画
 // =====================================================
 function render(){
@@ -572,8 +595,8 @@ function render(){
     const imgBtn=imgUrl?`<button class="bic vi" onclick="event.stopPropagation();viewImg('${c.id}')"><i class="ti ti-photo"></i> 名刺</button>`:'';
     const coTag=c.company?`<div class="card-co-tag">${esc(c.company)}</div>`:'';
     const deptLine=c.role?`<div class="cr" style="font-size:10px;color:var(--text3)">${esc(c.role)}</div>`:'';
-    const telLine=c.tel?`<div class="cdate"><i class="ti ti-phone"></i>${esc(c.tel)}</div>`:'';
-    const emailLine=c.email?`<div class="cdate" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%"><i class="ti ti-mail"></i>${esc(c.email)}</div>`:'';
+    const telLine=c.tel?`<div class="cdate-link" onclick="event.stopPropagation();callTel('${esc(c.tel)}','${esc(c.name||'')}')"><i class="ti ti-phone"></i>${esc(c.tel)}</div>`:'';
+    const emailLine=c.email?`<div class="cdate-link" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%" onclick="event.stopPropagation();sendMail('${esc(c.email)}','${esc(c.name||'')}')"><i class="ti ti-mail"></i>${esc(c.email)}</div>`:'';
     return`<div class="card" onclick="openDetail('${c.id}')">${imgH}
       <div class="card-body">${coTag}
         <div class="card-top">
